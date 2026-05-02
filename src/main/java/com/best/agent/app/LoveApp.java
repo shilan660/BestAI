@@ -1,15 +1,12 @@
 package com.best.agent.app;
 
 import com.best.agent.advisor.MyLoggerAdvisor;
+import com.best.agent.chatmemory.FileBasedChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.ChatMemoryRepository;
-import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
-import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,19 +31,28 @@ public class LoveApp {
 
     private final String REPORT_PROMPT = "每次对话后都要生成恋爱报告,标题为{用户名}的恋爱报告,内容为建议列表";
 
+    private final String TEST_PROMPT = "请根据用户的情感问题，从【分析】【原因】【建议】【话术】【注意事项】五个部分进行回复，内容具体、温和、有边界感，并尽量给出可直接使用的话术。";
     record LoveReport(String title, List<String> suggestions) {
 
     }
+    record Tests(String analysis, String reason, String suggestion, String phrase, String notice){
 
+    }
     public LoveApp(ChatModel dashscopeChatModel) {
 
-//        创建会话窗口 + 会话仓库
-        ChatMemoryRepository repository = new InMemoryChatMemoryRepository();
+//        初始化基于文件的对话记忆
+//        指定目录
+        String fileDir = System.getProperty("user.dir") + "/tem/chat-memory";
+        ChatMemory chatMemory = new FileBasedChatMemory(fileDir);
 
-        ChatMemory chatMemory = MessageWindowChatMemory.builder()
-                .chatMemoryRepository(repository)
-                .maxMessages(10)
-                .build();
+//        初始化基于内存的对话记忆
+//        创建会话窗口 + 会话仓库
+//        ChatMemoryRepository repository = new InMemoryChatMemoryRepository();
+//
+//        ChatMemory chatMemory = MessageWindowChatMemory.builder()
+//                .chatMemoryRepository(repository)
+//                .maxMessages(10)
+//                .build();
 
 //        初始化chatClient
         chatClient = ChatClient.builder(dashscopeChatModel)
@@ -64,18 +70,17 @@ public class LoveApp {
      * @param chatId 会话ID（用于上下文记忆）
      * @return 模型回复内容
      */
-    public String doChat(String message , String chatId) {
-        ChatResponse chatResponse = chatClient
+    public Tests doChat(String message , String chatId) {
+        Tests test = chatClient
                 .prompt()
+                .system(TEST_PROMPT)
                 .user(message)
                 .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
                 .call()
-                .chatResponse();
-        String content = chatResponse.getResult().getOutput().getText();
-        log.info("content: {}", content);
-        return content;
+                .entity(Tests.class);
+        log.info("test: {}", test);
+        return test;
     }
-
     /**
      * 生成恋爱报告
      * @param message 用户输入内容
@@ -92,6 +97,5 @@ public class LoveApp {
                 .entity(LoveReport.class);
         log.info("loveReport: {}", loveReport);
         return loveReport;
-
     }
 }

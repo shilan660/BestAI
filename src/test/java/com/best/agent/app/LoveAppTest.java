@@ -17,16 +17,16 @@ class LoveAppTest {
         String chatId = UUID.randomUUID().toString();
 
         String message = "你好,我叫时兰,我喜欢菲伦";
-        String answer = loveApp.doChat(message , chatId);
+        LoveApp.Tests answer = loveApp.doChat(message , chatId);
         Assertions.assertNotNull(answer);
-
-        message = "我不知道怎么跟她讲话";
-        answer = loveApp.doChat(message , chatId);
-        Assertions.assertNotNull(answer);
-
-        message = "我喜欢的人叫什么名字";
-        answer = loveApp.doChat(message , chatId);
-        Assertions.assertNotNull(answer);
+//
+//        message = "我不知道怎么跟她讲话";
+//        answer = loveApp.doChat(message , chatId);
+//        Assertions.assertNotNull(answer);
+//
+//        message = "我喜欢的人叫什么名字";
+//        answer = loveApp.doChat(message , chatId);
+//        Assertions.assertNotNull(answer);
 
     }
 

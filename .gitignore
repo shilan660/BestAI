@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+tem
+
 #本地配置文件
 application-local.yml
 
