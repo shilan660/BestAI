@@ -1,5 +1,6 @@
 package com.best.agent.app;
 
+import com.best.agent.advisor.MyLoggerAdvisor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -39,20 +40,21 @@ public class LoveApp {
                 .maxMessages(10)
                 .build();
 
-//        初始化chatclient
+//        初始化chatClient
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        MessageChatMemoryAdvisor.builder(chatMemory).build()
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        new MyLoggerAdvisor()
                 )
                 .build();
     }
 
     /**
      * AI基础对话(支持多轮会话建议)
-     * @param message
-     * @param chatId
-     * @return
+     * @param message 用户输入内容
+     * @param chatId 会话ID（用于上下文记忆）
+     * @return 模型回复内容
      */
     public String doChat(String message , String chatId) {
         ChatResponse chatResponse = chatClient

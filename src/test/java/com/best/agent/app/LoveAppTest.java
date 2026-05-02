@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class LoveAppTest {
 
@@ -18,15 +16,15 @@ class LoveAppTest {
     void doChat() {
         String chatId = UUID.randomUUID().toString();
 
-        String message = "你好,我叫时兰";
+        String message = "你好,我叫时兰,我喜欢菲伦";
         String answer = loveApp.doChat(message , chatId);
         Assertions.assertNotNull(answer);
 
-        message = "你好,我19岁";
+        message = "我不知道怎么跟她讲话";
         answer = loveApp.doChat(message , chatId);
         Assertions.assertNotNull(answer);
 
-        message = "我叫什么,我多少岁";
+        message = "我喜欢的人叫什么名字";
         answer = loveApp.doChat(message , chatId);
         Assertions.assertNotNull(answer);
 
