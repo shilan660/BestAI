@@ -12,6 +12,8 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Slf4j
 public class LoveApp {
@@ -29,6 +31,12 @@ public class LoveApp {
             "建议必须具体可执行，避免空泛鸡汤。可提供直接发送的话术，但不得鼓励PUA、操控、骚扰、跟踪、侵犯隐私或极端挽回。\n" +
             "\n" +
             "始终强调健康关系：尊重、真诚、边界、双向投入。遇到自伤、危险或严重情绪崩溃，先安抚，并建议寻求现实支持或专业帮助。";
+
+    private final String REPORT_PROMPT = "每次对话后都要生成恋爱报告,标题为{用户名}的恋爱报告,内容为建议列表";
+
+    record LoveReport(String title, List<String> suggestions) {
+
+    }
 
     public LoveApp(ChatModel dashscopeChatModel) {
 
@@ -66,5 +74,24 @@ public class LoveApp {
         String content = chatResponse.getResult().getOutput().getText();
         log.info("content: {}", content);
         return content;
+    }
+
+    /**
+     * 生成恋爱报告
+     * @param message 用户输入内容
+     * @param chatId 会话ID（用于上下文记忆）
+     * @return 模型回复内容
+     */
+    public LoveReport doChatWithReport(String message , String chatId) {
+        LoveReport loveReport = chatClient
+                .prompt()
+                .system(REPORT_PROMPT)
+                .user(message)
+                .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
+                .call()
+                .entity(LoveReport.class);
+        log.info("loveReport: {}", loveReport);
+        return loveReport;
+
     }
 }
