@@ -2,7 +2,6 @@ package com.best.agent.app;
 
 import com.best.agent.advisor.MyLoggerAdvisor;
 import com.best.agent.chatmemory.FileBasedChatMemory;
-import com.best.agent.rag.LoveAppRagCloudConfig;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;

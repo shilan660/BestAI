@@ -1,6 +1,5 @@
 package com.best.agent.rag;
 
-import com.alibaba.cloud.ai.dashscope.embedding.DashScopeEmbeddingModel;
 import jakarta.annotation.Resource;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
