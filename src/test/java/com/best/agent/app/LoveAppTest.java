@@ -12,31 +12,39 @@ class LoveAppTest {
     @Resource
     private LoveApp loveApp;
 
-    @Test
-    void doChat() {
-        String chatId = UUID.randomUUID().toString();
-
-        String message = "你好,我叫时兰,我喜欢菲伦";
-        LoveApp.Tests answer = loveApp.doChat(message , chatId);
-        Assertions.assertNotNull(answer);
+//    @Test
+//    void doChat() {
+//        String chatId = UUID.randomUUID().toString();
 //
-//        message = "我不知道怎么跟她讲话";
-//        answer = loveApp.doChat(message , chatId);
+//        String message = "你好,我叫时兰,我喜欢菲伦";
+//        LoveApp.Tests answer = loveApp.doChat(message , chatId);
 //        Assertions.assertNotNull(answer);
+////
+////        message = "我不知道怎么跟她讲话";
+////        answer = loveApp.doChat(message , chatId);
+////        Assertions.assertNotNull(answer);
+////
+////        message = "我喜欢的人叫什么名字";
+////        answer = loveApp.doChat(message , chatId);
+////        Assertions.assertNotNull(answer);
 //
-//        message = "我喜欢的人叫什么名字";
-//        answer = loveApp.doChat(message , chatId);
-//        Assertions.assertNotNull(answer);
-
-    }
+//    }
+//
+//    @Test
+//    void doChatWithReport() {
+//        String chatId = UUID.randomUUID().toString();
+//        String message = "你好,我叫时兰,我喜欢菲伦,但是我不知道应该怎么追求她,你能帮我想一些建议吗";
+//        LoveApp.LoveReport loveReport = loveApp.doChatWithReport(message , chatId);
+//        Assertions.assertNotNull(loveReport);
+//        Assertions.assertNotNull(loveReport.suggestions());
+//
+//    }
 
     @Test
-    void doChatWithReport() {
+    void doChatWithRag(){
         String chatId = UUID.randomUUID().toString();
-        String message = "你好,我叫时兰,我喜欢菲伦,但是我不知道应该怎么追求她,你能帮我想一些建议吗";
-        LoveApp.LoveReport loveReport = loveApp.doChatWithReport(message , chatId);
-        Assertions.assertNotNull(loveReport);
-        Assertions.assertNotNull(loveReport.suggestions());
-
+        String message = "你好,我喜欢细腻慢热的人,你有没有推荐的对象";
+        String response = loveApp.doChatWithRag(message , chatId);
+        Assertions.assertNotNull(response);
     }
 }

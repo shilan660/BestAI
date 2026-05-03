@@ -46,6 +46,4 @@ public class MyLoggerAdvisor implements CallAdvisor, StreamAdvisor {
         Flux<ChatClientResponse> advisedResponse = chain.nextStream(advisedRequest);
         return new ChatClientMessageAggregator().aggregateChatClientResponse(advisedResponse , this::observeAfter);
     }
-
-
 }

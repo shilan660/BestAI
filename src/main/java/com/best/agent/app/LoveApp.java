@@ -2,11 +2,18 @@ package com.best.agent.app;
 
 import com.best.agent.advisor.MyLoggerAdvisor;
 import com.best.agent.chatmemory.FileBasedChatMemory;
+import com.best.agent.rag.LoveAppRagCloudConfig;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,6 +21,12 @@ import java.util.List;
 @Component
 @Slf4j
 public class LoveApp {
+
+    @Resource
+    private SimpleVectorStore simpleStore;
+
+    @Resource
+    private Advisor LoveAppRagCloudAdvisor;
 //     1. 引入client
 //    2. 初始化client
 //    3. 调用client
@@ -32,6 +45,9 @@ public class LoveApp {
     private final String REPORT_PROMPT = "每次对话后都要生成恋爱报告,标题为{用户名}的恋爱报告,内容为建议列表";
 
     private final String TEST_PROMPT = "请根据用户的情感问题，从【分析】【原因】【建议】【话术】【注意事项】五个部分进行回复，内容具体、温和、有边界感，并尽量给出可直接使用的话术。";
+    @Autowired
+    private Advisor loveAppRagCloudAdvisor;
+
     record LoveReport(String title, List<String> suggestions) {
 
     }
@@ -93,9 +109,28 @@ public class LoveApp {
                 .system(REPORT_PROMPT)
                 .user(message)
                 .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
+                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
                 .call()
                 .entity(LoveReport.class);
         log.info("loveReport: {}", loveReport);
         return loveReport;
+    }
+
+
+    public String doChatWithRag(String message , String chatId) {
+        ChatResponse response = chatClient
+                .prompt()
+                .system(TEST_PROMPT)
+                .user(message)
+//                日志记录
+                .advisors(new MyLoggerAdvisor())
+//                RAG
+//                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
+//                应用RAG检索增强服务
+                .advisors(LoveAppRagCloudAdvisor)
+                .call()
+                .chatResponse();
+        log.info("response: {}", response);
+        return response.toString();
     }
 }
