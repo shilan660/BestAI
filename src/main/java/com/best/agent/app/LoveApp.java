@@ -2,6 +2,9 @@ package com.best.agent.app;
 
 import com.best.agent.advisor.MyLoggerAdvisor;
 import com.best.agent.chatmemory.FileBasedChatMemory;
+import com.best.agent.rag.LoveAppContextualQueryAugmenterFactory;
+import com.best.agent.rag.LoveAppRagCustomAdvisorFactory;
+import com.best.agent.rag.QueryRewriter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -12,6 +15,8 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +31,19 @@ public class LoveApp {
 
     @Resource
     private Advisor LoveAppRagCloudAdvisor;
+
+    @Resource
+    private QueryRewriter queryRewriter;
+
+    @Resource
+    private Advisor loveAppRagCloudAdvisor;
+
+    @Resource
+    private VectorStore PgVectorStore;
+
+    @Resource
+    LoveAppContextualQueryAugmenterFactory loveAppContextualQueryAugmenterFactory;
+
 //     1. 引入client
 //    2. 初始化client
 //    3. 调用client
@@ -45,7 +63,7 @@ public class LoveApp {
 
     private final String TEST_PROMPT = "请根据用户的情感问题，从【分析】【原因】【建议】【话术】【注意事项】五个部分进行回复，内容具体、温和、有边界感，并尽量给出可直接使用的话术。";
     @Autowired
-    private Advisor loveAppRagCloudAdvisor;
+    private VectorStore vectorStore;
 
     record LoveReport(String title, List<String> suggestions) {
 
@@ -91,6 +109,7 @@ public class LoveApp {
                 .system(TEST_PROMPT)
                 .user(message)
                 .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
+                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
                 .call()
                 .entity(Tests.class);
         log.info("test: {}", test);
@@ -108,8 +127,10 @@ public class LoveApp {
                 .system(REPORT_PROMPT)
                 .user(message)
                 .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
+//                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
                 .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
                 .call()
+
                 .entity(LoveReport.class);
         log.info("loveReport: {}", loveReport);
         return loveReport;
@@ -117,6 +138,8 @@ public class LoveApp {
 
 
     public String doChatWithRag(String message , String chatId) {
+//        String newQuery = queryRewriter.doQueryRewriter(message);
+
         ChatResponse response = chatClient
                 .prompt()
                 .system(TEST_PROMPT)
@@ -126,7 +149,8 @@ public class LoveApp {
 //                RAG
 //                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
 //                应用RAG检索增强服务
-                .advisors(LoveAppRagCloudAdvisor)
+                .advisors(LoveAppRagCustomAdvisorFactory.createLoveAppRagCustomAdvisor(simpleStore , "已婚"))
+//                .advisors(LoveAppRagCloudAdvisor)
                 .call()
                 .chatResponse();
         log.info("response: {}", response);

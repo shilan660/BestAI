@@ -3,6 +3,24 @@ spring:
     name: Best AI
   profiles:
     active: local
+
+
+  datasource:
+    url: jdbc:postgresql://rm-cn-xxa4rn4380001euo.rwlb.rds.aliyuncs.com:5432/Best_AI
+    username: my_user
+
+  ai:
+    dashscope:
+      chat:
+        options:
+          model: "qwen-plus"
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024
+        max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
+
 server:
   port : 8123
   servlet:
