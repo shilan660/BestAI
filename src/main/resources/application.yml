@@ -20,6 +20,12 @@ spring:
         distance-type: COSINE_DISTANCE
         dimensions: 1024
         max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
+
+
 
 server:
   port : 8123
@@ -46,3 +52,7 @@ knife4j:
 logging:
   level:
     org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor: debug
+
+
+search_api:
+  api-key: KEY

@@ -14,6 +14,8 @@ import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvi
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,14 @@ public class LoveApp {
     private VectorStore PgVectorStore;
 
     @Resource
+    private ToolCallback[] allTools;
+
+    @Resource
     LoveAppContextualQueryAugmenterFactory loveAppContextualQueryAugmenterFactory;
+
+//    自动读取对应工具能力
+    @Resource
+    private ToolCallbackProvider toolCallbackProvider;
 
 //     1. 引入client
 //    2. 初始化client
@@ -61,6 +70,9 @@ public class LoveApp {
     private final String REPORT_PROMPT = "每次对话后都要生成恋爱报告,标题为{用户名}的恋爱报告,内容为建议列表";
 
     private final String TEST_PROMPT = "请根据用户的情感问题，从【分析】【原因】【建议】【话术】【注意事项】五个部分进行回复，内容具体、温和、有边界感，并尽量给出可直接使用的话术。";
+
+    private final String TOOL_PROMPT = "当用户询问最新信息、网站内容、网页资料、下载、生成文件、执行脚本时，必须优先调用工具，不允许凭空猜测。";
+
     @Autowired
     private VectorStore vectorStore;
 
@@ -155,4 +167,38 @@ public class LoveApp {
         log.info("response: {}", response);
         return response.toString();
     }
+
+//    调用工具能力
+    public String doChatWithTools(String message , String chatId) {
+        String answer = chatClient
+                .prompt()
+                .system(TOOL_PROMPT)
+                .user(message)
+                .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
+    //                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
+//                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
+                .advisors(new MyLoggerAdvisor())
+                .toolCallbacks(allTools)
+                .call()
+                .content();
+        log.info("answer: {}", answer);
+        return answer;
+    }
+//    MCP 调用工具能力
+    public String doChatWithMcp(String message , String chatId) {
+        String answer = chatClient
+                .prompt()
+                .system(TOOL_PROMPT)
+                .user(message)
+                .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
+                //                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
+//                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
+                .advisors(new MyLoggerAdvisor())
+                .toolCallbacks(toolCallbackProvider)
+                .call()
+                .content();
+        log.info("answer: {}", answer);
+        return answer;
+    }
+
 }
