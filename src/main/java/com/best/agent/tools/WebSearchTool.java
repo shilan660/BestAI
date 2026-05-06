@@ -11,7 +11,6 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-
 public class WebSearchTool {
 
     private static final String SEARCH_API_URL = "https://www.searchapi.io/api/v1/search";

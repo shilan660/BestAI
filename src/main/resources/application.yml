@@ -4,7 +4,6 @@ spring:
   profiles:
     active: local
 
-
   datasource:
     url: jdbc:postgresql://rm-cn-xxa4rn4380001euo.rwlb.rds.aliyuncs.com:5432/Best_AI
     username: my_user
@@ -22,10 +21,14 @@ spring:
         max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
     mcp:
       client:
-        stdio:
-          servers-configuration: classpath:mcp-servers.json
+        sse:
+          connections:
+            server1:
+              url: http://localhost:9127
 
 
+#        stdio:
+#          servers-configuration: classpath:mcp-servers.json
 
 server:
   port : 8123

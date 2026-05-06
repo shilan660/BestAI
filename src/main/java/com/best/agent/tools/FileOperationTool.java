@@ -5,7 +5,9 @@ import cn.hutool.core.io.IORuntimeException;
 import com.best.agent.constant.FileConstant;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FileOperationTool {
 
     private final String FILE_PATH = FileConstant.FILE_SAVE_DIR + "/file";

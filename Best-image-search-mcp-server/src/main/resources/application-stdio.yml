@@ -1,0 +1,15 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: best-image-search-mcp-server
+        version: 0.0.1
+        type: SYNC
+        stdio: true
+
+  main:
+    web-application-type: none
+    banner-mode: off
+
+search_api:
+  api-key: bIZKneVIzqLoE5lmb7pJzmHYcDTJibCo7I0G1t8H2DYJSE1P30GXl3Go

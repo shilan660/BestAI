@@ -14,8 +14,8 @@ import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvi
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +49,11 @@ public class LoveApp {
     LoveAppContextualQueryAugmenterFactory loveAppContextualQueryAugmenterFactory;
 
 //    自动读取对应工具能力
+//    @Resource
+//    private ToolCallbackProvider toolCallbackProvider;
+
     @Resource
-    private ToolCallbackProvider toolCallbackProvider;
+    private SyncMcpToolCallbackProvider toolCallbackProvider;
 
 //     1. 引入client
 //    2. 初始化client

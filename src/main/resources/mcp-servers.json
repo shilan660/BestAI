@@ -10,5 +10,20 @@
         "AMAP_MAPS_API_KEY": "20d9d325ffe356ccb005d810c7f2f01e"
       }
     }
+  },
+
+  "mcpServers": {
+    "yu-image-search-mcp-server": {
+      "command": "java",
+      "args": [
+        "-Dspring.ai.mcp.server.stdio=true",
+        "-Dspring.main.web-application-type=none",
+        "-Dlogging.pattern.console=",
+        "-jar",
+        "Best-image-search-mcp-server/target/Best-image-search-mcp-server-0.0.1-SNAPSHOT.jar"
+      ],
+      "env": {}
+    }
   }
+
 }
