@@ -12,7 +12,7 @@ spring:
     dashscope:
       chat:
         options:
-          model: "qwen-plus"
+          model: "qwen-plus-2025-07-28"
     vectorstore:
       pgvector:
         index-type: HNSW
@@ -26,9 +26,8 @@ spring:
             server1:
               url: http://localhost:9127
 
-
-#        stdio:
-#          servers-configuration: classpath:mcp-servers.json
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
 
 server:
   port : 8123

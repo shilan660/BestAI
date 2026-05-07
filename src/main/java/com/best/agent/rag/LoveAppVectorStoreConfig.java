@@ -28,13 +28,13 @@ public class LoveAppVectorStoreConfig {
 //        加载文档
         List<Document> documents = loveAppDocumentLoader.loadDocuments();
 
-        List<Document> documentsNew = myKeyWordEnricher.enrichDocuments(documents);
+//        List<Document> documentsNew = myKeyWordEnricher.enrichDocuments(documents);
 
 //        默认切分
 //        List<Document> documentsNew = myTokenTextSplitter.splitDocuments(documents);
 
 //        List<Document> documentsSelf = myTokenTextSplitter.splitCustomized(documents);
-        simpleStore.add(documentsNew);
+        simpleStore.add(documents);
         return simpleStore;
     }
 }

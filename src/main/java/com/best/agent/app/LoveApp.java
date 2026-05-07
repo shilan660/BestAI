@@ -20,6 +20,7 @@ import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -117,17 +118,16 @@ public class LoveApp {
      * @param chatId 会话ID（用于上下文记忆）
      * @return 模型回复内容
      */
-    public Tests doChat(String message , String chatId) {
-        Tests test = chatClient
+    public Flux<String> doChat(String message , String chatId) {
+        return chatClient
                 .prompt()
                 .system(TEST_PROMPT)
                 .user(message)
                 .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
                 .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
-                .call()
-                .entity(Tests.class);
-        log.info("test: {}", test);
-        return test;
+                .stream()
+                .content();
+
     }
     /**
      * 生成恋爱报告

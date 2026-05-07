@@ -7,6 +7,6 @@ class PDFGeneratorToolTest {
     @Test
     void generatePdf() {
         PDFGeneratorTool pdfGeneratorTool = new PDFGeneratorTool();
-        String result = pdfGeneratorTool.generatePdf("baozi", "包子");
+        String result = pdfGeneratorTool.generatePdf("yurou", "鱼");
     }
 }

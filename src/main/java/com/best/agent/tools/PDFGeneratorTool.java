@@ -19,7 +19,12 @@ public class PDFGeneratorTool {
     /**
      * 根据内容生成PDF文件
      */
-    @Tool(description = "Generate a PDF file from text content")
+    @Tool(description = "If the user asks for PDF output, you MUST call the generatePdf tool.\n" +
+            "Do not say you cannot generate PDF.\n" +
+            "Do not ask the user to manually create the PDF.\n" +
+            "Do not call terminate before generatePdf returns a PDF file path.\n" +
+            "If map/location tools are unavailable, make a reasonable plan based on available search results and common knowledge, then still generate PDF.\n" +
+            "Do not ask the user for confirmation unless absolutely necessary.\n")
     public String generatePdf(
             @ToolParam(description = "File name (without .pdf)") String fileName,
             @ToolParam(description = "Content to write into PDF") String content
