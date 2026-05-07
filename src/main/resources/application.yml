@@ -7,27 +7,30 @@ spring:
   datasource:
     url: jdbc:postgresql://rm-cn-xxa4rn4380001euo.rwlb.rds.aliyuncs.com:5432/Best_AI
     username: my_user
+    password: ${DB_PASSWORD}
 
   ai:
     dashscope:
+      api-key: ${DASHSCOPE_API_KEY}
       chat:
         options:
-          model: "qwen-plus-2025-07-28"
+          model: "qwen-max"
+
     vectorstore:
       pgvector:
         index-type: HNSW
         distance-type: COSINE_DISTANCE
         dimensions: 1024
         max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
-    mcp:
-      client:
-        sse:
-          connections:
-            server1:
-              url: http://localhost:9127
-
-        stdio:
-          servers-configuration: classpath:mcp-servers.json
+#    mcp:
+#      client:
+#        sse:
+#          connections:
+#            server1:
+#              url: http://localhost:9127
+#
+#        stdio:
+#          servers-configuration: classpath:mcp-servers.json
 
 server:
   port : 8123
@@ -57,4 +60,4 @@ logging:
 
 
 search_api:
-  api-key: KEY
+  api-key: ${SEARCH_API_KEY}

@@ -118,7 +118,25 @@ public class LoveApp {
      * @param chatId 会话ID（用于上下文记忆）
      * @return 模型回复内容
      */
-    public Flux<String> doChat(String message , String chatId) {
+    public String doChat(String message , String chatId) {
+        return chatClient
+                .prompt()
+                .system(TEST_PROMPT)
+                .user(message)
+                .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
+                .advisors(QuestionAnswerAdvisor.builder(simpleStore).build())
+                .call()
+                .content();
+
+    }
+
+    /**
+     * AI基础对话(流式输出)
+     * @param message 用户输入内容
+     * @param chatId 会话ID（用于上下文记忆）
+     * @return 模型回复内容
+     */
+    public Flux<String> doChatByStream(String message , String chatId) {
         return chatClient
                 .prompt()
                 .system(TEST_PROMPT)

@@ -1,0 +1,9 @@
+target/
+.idea/
+*.iml
+.git/
+.gitignore
+logs/
+Best-AI-Agent-Front/
+Best-image-search-mcp-server/
+tem/
